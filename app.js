@@ -8,22 +8,27 @@ const express = require("express"),
   io = socketio(server),
   {
     chat
-  } = require('./utils/konsultasi'),
+  } = require("./utils/konsultasi"),
   {
-    question,
-    question2
-  } = require('./models/data')
+    questions
+  } = require("./models/data");
 
 io.on("connection", (socket) => {
   console.log("user connect");
 
-  const botName = 'Bot';
+  const botName = "Bot";
 
-  socket.emit("chat", chat(botName, "Selamat datang, Jawab pertanyaan berikut dengan menekan tombol Ya atau Tidak"));
+  socket.emit(
+    "greeting",
+    chat(
+      botName,
+      "Selamat datang, Jawab pertanyaan berikut dengan menekan tombol Ya atau Tidak"
+    )
+  );
 
-  socket.emit("question", chat(botName, question));
+  socket.emit("konsultasi", chat(botName, questions));
 
-  socket.on('konsultasi', (msg) => console.log(msg));
+  // socket.on("DiagnosisResult", diagnosisResults());
 
   socket.on("disconnect", () => console.log("user disconnect"));
 });

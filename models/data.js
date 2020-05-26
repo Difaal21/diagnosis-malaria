@@ -1,108 +1,115 @@
-const question = [{
+const questions = [{
         kode: "G001",
-        gejala: "Apakah anda merasakan Demam ?",
+        gejala: "Demam",
+        pertanyaan: "Apakah anda merasakan Demam ?",
     },
     {
         kode: "G002",
-        gejala: "Demam datang hampir tiap hari?",
+        gejala: "Demam setiap hari",
+        pertanyaan: "Demam datang hampir tiap hari?",
     },
     {
         kode: "G003",
-        gejala: "Demam muncul setiap 3 hari sekali ?",
+        gejala: "Demam setiap 3 hari ",
+        pertanyaan: "Demam muncul setiap 3 hari sekali ?",
     },
     {
         kode: "G004",
-        gejala: "Demam muncul setiap 4 hari sekali ?",
+        gejala: "Demam setiap 4 hari",
+        pertanyaan: "Demam muncul setiap 4 hari sekali ?",
     },
     {
         kode: "G005",
-        gejala: "Apakah demam mencapai lebih dari 40 derajat celcius ?",
+        gejala: "Demam >= 40 derajat",
+        pertanyaan: "Apakah demam mencapai lebih dari 40 derajat ?",
     },
     {
         kode: "G006",
-        gejala: "Apakah badan anda menggigil ?",
+        gejala: "Menggigil",
+        pertanyaan: "Apakah anda merasakan sangat dingin (menggigil) ?",
     },
     {
         kode: "G007",
-        gejala: "Apakah mengalami sakit kepala ?",
+        gejala: "Keluar banyak keringat",
+        pertanyaan: "Apakah anda mengeluarkan banyak keringat ?",
     },
     {
         kode: "G008",
-        gejala: "Apakah anda berkeringat ?",
+        gejala: "Sakit kepala",
+        pertanyaan: "Apakah mengalami sakit kepala ?",
     },
     {
         kode: "G009",
-        gejala: "Apakah anda merasa lemas ?",
+        gejala: "Lemas",
+        pertanyaan: "Apakah merasakan lemas atau mudah lelah ?",
     },
     {
         kode: "G010",
-        gejala: "Apakah terasa pegal linu ?",
+        gejala: "Muka pucat",
+        pertanyaan: "Muka terlihat pucat ?",
     },
     {
         kode: "G011",
-        gejala: "Mengalami Anemia atau kurang darah ?",
+        gejala: "Detak Berdebar",
+        pertanyaan: "Detak jantung tak beraturan ?",
     },
     {
         kode: "G012",
-        gejala: "Apakah anda merasa Mual atau muntah ?",
+        gejala: "Napas pendek",
+        pertanyaan: "Nafas terasa pendek ?",
     },
     {
         kode: "G013",
-        gejala: "Apakah anda merasakan nyeri perut hingga diare ?",
+        gejala: "Kedinginan pada daerah tertentu",
+        pertanyaan: "Dingin pada tangan dan kaki ?",
     },
     {
         kode: "G014",
-        gejala: "Mengalami gejala Klasik Trias (Panas, Dingin, Berkeringat) ?",
+        gejala: "Kejang",
+        pertanyaan: "Mengalami kejang, biasanya terjadi ketika suhu badan lebih dari 40 derajat ?",
     },
     {
         kode: "G015",
-        gejala: "Apakah anda mengalami kejang-kejang ?",
+        gejala: "Keluhan pada sore hari",
+        pertanyaan: "Keluhan yang dirasakan lebih cenderung muncul sore hari ?",
     },
     {
         kode: "G016",
-        gejala: "Keluhan yang dirasakan lebih cenderung muncul sore hari ?",
+        gejala: "Keluhan pada malam hari",
+        pertanyaan: "Keluhan yang dirasakan lebih cenderung muncul malam hari ?",
     },
     {
         kode: "G017",
-        gejala: "Keluhan yang dirasakan lebih cenderung muncul malam hari ?",
+        gejala: "Splenomelgia",
+        pertanyaan: "Terjadinya splenomelgia (Pembesaran Limpa) ?",
     },
     {
         kode: "G018",
-        gejala: "Apakah anda merasakan Splenomelgia (Pembesaran Limpa) ?",
+        gejala: "Sindroma nefrotik",
+        pertanyaan: "Merasakan sakit pada bagian ginjal(gangguan ginjal) ?",
     },
     {
         kode: "G019",
-        gejala: "Apakah anda merasakan Sindroma Nefroik (gangguan ginjal) ?",
+        gejala: "Kambuh",
+        pertanyaan: "Keluhan sering kambuh walaupun dinyatakan sudah sembuh ?",
     },
     {
         kode: "G020",
-        gejala: "Apakah gejala-gejala yang ditanyakan sering kambuh ?",
+        gejala: "Mual atau muntah",
+        pertanyaan: "Apakah merasakan mual bahkan sampai muntah ?",
+    },
+    {
+        kode: "G021",
+        gejala: "Sakit terut",
+        pertanyaan: "Apakah anda mengalami sakit perut hingga diare ?",
+    },
+    {
+        kode: "G022",
+        gejala: "Pegal atau nyeri otot",
+        pertanyaan: "Badan terasa pegal atau nyeri otot ?",
     },
 ];
 
-const question2 = ["Apakah anda merasakan Demam ?",
-    "Demam datang hampir tiap hari ?",
-    "Demam muncul setiap 3 hari sekali ?",
-    "Demam muncul setiap 4 hari sekali ?",
-    "Apakah demam mencapai lebih dari 40 derajat celcius ?",
-    "Apakah badan anda menggigil ?",
-    "Apakah mengalami sakit kepala ?",
-    "Apakah anda berkeringat ?",
-    "Apakah anda merasa lemas ?",
-    "Apakah terasa pegal linu ?",
-    "Mengalami Anemia atau kurang darah ?",
-    "Apakah anda merasa Mual atau muntah ?",
-    "Apakah anda merasakan nyeri perut hingga diare ?",
-    "Mengalami gejala Klasik Trias (Panas, Dingin, Berkeringat) ?",
-    "Apakah anda mengalami kejang-kejang ?",
-    "Keluhan yang dirasakan lebih cenderung muncul sore hari ?",
-    "Keluhan yang dirasakan lebih cenderung muncul malam hari ?",
-    "Apakah anda merasakan Splenomelgia (Pembesaran Limpa) ?",
-    "Apakah anda merasakan Sindroma Nefroik (gangguan ginjal) ?",
-    "Apakah gejala-gejala yang ditanyakan sering kambuh ?"
-];
-
 module.exports = {
-    question,
-    question2
+    questions
 }
