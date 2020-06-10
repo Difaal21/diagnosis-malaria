@@ -7,16 +7,25 @@ const express = require("express"),
   server = http.createServer(app),
   io = socketio(server),
   {
-    chat
+    chat,
+    checkBiggestPercent,
+    checkTypeMalaria,
   } = require("./utils/konsultasi"),
-  {
-    questions
-  } = require("./models/data");
+  { questions } = require("./models/data");
 
 io.on("connection", (socket) => {
-  console.log("user connect");
+  // On --- Menerima data
+  // Emit --- Mengirim Data
 
-  const botName = "Bot";
+  socket.on("percentage", (data) => {
+    socket.emit("possibility", checkBiggestPercent(data));
+  });
+
+  socket.on("checkTypeMalaria", (biggestPossibility) => {
+    socket.emit("finalResult", checkTypeMalaria(biggestPossibility));
+  });
+
+  const botName = "Bot Pakar";
 
   socket.emit(
     "greeting",

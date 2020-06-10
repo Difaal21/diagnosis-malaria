@@ -1,20 +1,59 @@
+const socket = io();
+
 // Dapatkan Nama User by URL
 const { name } = Qs.parse(location.search, {
   ignoreQueryPrefix: true,
 });
 
 const getNameUser = document.getElementById("name");
+
 // Menampilkan nama user di Box
 getNameUser.innerText = `${name}`;
 
-const socket = io();
-
+// Menampilkan pesan selamat datang
 socket.on("greeting", (data) => chat(data));
 
-// Mengambil elemen HTML
 const chatMessage = document.querySelector(".chat-messages");
 
-// Function / method untuk menampilkan pesan pada chat
+// Dapatkan tombol answer
+const getBtnAnswer = document.querySelectorAll(".btn-answer");
+
+const choose = [];
+
+socket.on("konsultasi", (questions) => {
+  // Menampilkan pertanyaan pertama
+  chat({
+    name: questions.name,
+    text: questions.text[choose.length].pertanyaan,
+  });
+
+  getBtnAnswer.forEach((btn) => {
+    // ketika button di klik
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+
+      // Dapat kan jawaban
+      const answers = e.target.innerText;
+
+      // Dapatkan Nama dan Jawaban User
+      chat({
+        name: name,
+        text: answers,
+      });
+
+      // Masukkan jawaban ke variabel choose
+      choose.push(answers);
+
+      // Dapatkan Jawaban user dan Pertanyaan dari Bot
+      getAnswerAndQuestion({
+        answer: answers,
+        questions: questions,
+      });
+    });
+  });
+});
+
+// Menampilkan pesan pada box chat
 function chat(message) {
   // Membuat elemen div
   const div = document.createElement("div");
@@ -22,7 +61,7 @@ function chat(message) {
   //Menambahkan class message
   div.classList.add("message");
 
-  // Jika user yang kirim
+  // Jika user yang kirim pesan
   if (message.name === name) {
     // Ubah bubble menjadi abu-abu
     div.style.background = "gray";
@@ -42,78 +81,39 @@ function chat(message) {
   chatMessage.scrollTop = chatMessage.scrollHeight;
 }
 
-// Dapatkan tombol answer
-const getBtnAnswer = document.querySelectorAll(".btn-answer");
-
-const choose = [];
-socket.on("konsultasi", (questions) => {
-  // Menampilkan pertanyaan pertama
-  chat({
-    name: questions.name,
-    text: questions.text[choose.length].pertanyaan,
-  });
-
-  getBtnAnswer.forEach((btn) => {
-    // ketika button di klik
-    btn.addEventListener("click", (e) => {
-      e.preventDefault();
-
-      // Dapat kan jawaban
-      let answers = e.target.innerText;
-
-      // Dapatkan Nama dan Jawaban User
-      chat({
-        name: name,
-        text: answers,
-      });
-
-      // Masukkan jawaban ke variabel choose
-      choose.push(answers);
-
-      // Dapatkan Jawaban dan Pertanyaan
-      getAnswerAndQuestion({
-        answer: answers,
-        questions: questions,
-      });
-    });
-  });
-});
-
 let number = 0;
-const sicks = [];
 const malaria = [];
 const malariaKuartana = [];
 const malariaOvale = [];
 const malariaTertiana = [];
 const malariaTropika = [];
-
-const detailQuestions = [];
+const sicks = [];
 
 function getAnswerAndQuestion(data) {
   const questions = data.questions.text;
-  // Question Code bisa diganti dengan includes
+
   const questionCode = data.questions.text[number].kode;
 
   const answer = data.answer;
-
   const yes = "Ya";
   const no = "Tidak";
 
-  if (answer === yes) {
-    sicks.push(questionCode);
-  }
-
+  // Hitungan  = Jumlah Gejala / Total Gejala
   const malariaPercent = 8.3334;
   const malariaTertianaPercent = 6.6667;
   const malariaKuartanaPercent = 6.6667;
   const malariaOvalePercent = 7.1429;
   const malariaTropikaPercent = 6.25;
 
+  /*  if (answer === yes) {
+    sicks.push(questionCode);
+  } */
+
   //==============    LOGIKA   ==============//
 
   // Mengecek gejala yang timbul, dan mengirim variabel number untuk melanjutkan pada pertanyaan berikutnya
   if (questionCode === "G001" && answer === yes) {
-    console.log("Kamu Demam");
+    // console.log("Kamu Demam");
     malaria.push(malariaPercent);
     malariaTertiana.push(malariaTertianaPercent);
     malariaTropika.push(malariaTropikaPercent);
@@ -121,7 +121,7 @@ function getAnswerAndQuestion(data) {
     malariaKuartana.push(malariaKuartanaPercent);
     number = 1;
   } else if (questionCode === "G001" && answer === no) {
-    console.log("Kamu tidak terkena Malaria");
+    // console.log("Kamu tidak terkena Malaria");
     number = undefined;
     chat({
       name: data.questions.name,
@@ -131,39 +131,39 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G002" && answer === yes) {
-    console.log("Kemungkinan sakit Malaria Tropika atau Malaria Ovale");
+    // console.log("Kemungkinan sakit Malaria Tropika atau Malaria Ovale");
     malariaTropika.push(malariaTropikaPercent);
     malariaOvale.push(malariaOvalePercent);
     number = 4;
   } else if (questionCode === "G002" && answer === no) {
-    console.log("Kemungkinan sakit Malaria Tertiana atau Malaria Kuartana");
+    // console.log("Kemungkinan sakit Malaria Tertiana atau Malaria Kuartana");
     number = 2;
   }
 
   if (questionCode === "G003" && answer === yes) {
-    console.log("Malaria Tertiana");
+    // console.log("Malaria Tertiana");
     malariaTertiana.push(malariaTertianaPercent);
     number = 5;
   } else if (questionCode === "G003" && answer === no) {
-    console.log("Kemungkinan Malaria Kuartana");
+    // console.log("Kemungkinan Malaria Kuartana");
     number = 3;
   }
 
   if (questionCode === "G004" && answer === yes) {
-    console.log("Malaria Kuartana");
+    // console.log("Malaria Kuartana");
     malariaKuartana.push(malariaKuartanaPercent);
     number = 5;
   } else if (questionCode === "G004" && answer === no) {
-    console.log("Gejala demam biasa");
+    // console.log("Gejala demam biasa");
     number = 5;
   }
 
   if (questionCode === "G005" && answer === yes) {
-    console.log("Malaria Tropika");
+    // console.log("Malaria Tropika");
     malariaTropika.push(malariaTropikaPercent);
     number = 5;
   } else if (questionCode === "G005" && answer === no) {
-    console.log("Malaria Ovale");
+    // console.log("Malaria Ovale");
     number = 5;
   }
 
@@ -256,7 +256,7 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G014" && answer === yes) {
-    console.log("Malaria Tropika");
+    // console.log("Malaria Tropika");
     malariaTropika.push(malariaTropikaPercent);
     number = 16;
   } else if (questionCode === "G014" && answer === no) {
@@ -264,7 +264,7 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G015" && answer === yes) {
-    console.log("Malaria Tertiana");
+    // console.log("Malaria Tertiana");
     malariaTertiana.push(malariaTertianaPercent);
     number = 18;
   } else if (questionCode === "G015" && answer === no) {
@@ -272,16 +272,16 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G016" && answer === yes) {
-    console.log("Malaria Ovale");
+    // console.log("Malaria Ovale");
     malariaOvale.push(malariaOvalePercent);
     number = 19;
   } else if (questionCode === "G016" && answer === no) {
-    console.log("Malaria Tropika atau Malaria Kuarta");
+    // console.log("Malaria Tropika atau Malaria Kuarta");
     number = 16;
   }
 
   if (questionCode === "G017" && answer === yes) {
-    console.log("Malaria Tropika atau Malaria Kuarta");
+    // console.log("Malaria Tropika atau Malaria Kuarta");
     malariaKuartana.push(malariaKuartanaPercent);
     malariaTropika.push(malariaTropikaPercent);
     number = 17;
@@ -290,7 +290,7 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G018" && answer === yes) {
-    console.log("Malaria Kuarta");
+    // console.log("Malaria Kuarta");
     malariaKuartana.push(malariaKuartanaPercent);
     number = 18;
   } else if (questionCode === "G018" && answer === no) {
@@ -298,7 +298,7 @@ function getAnswerAndQuestion(data) {
   }
 
   if (questionCode === "G019" && answer === yes) {
-    console.log("Malaria Tertiana");
+    // console.log("Malaria Tertiana");
     malariaTertiana.push(malariaTertianaPercent);
     number = 19;
   } else if (questionCode === "G019" && answer === no) {
@@ -338,29 +338,15 @@ function getAnswerAndQuestion(data) {
     number = 22;
   }
 
-  const malariaPercentResults = malaria
-    .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
+  const malariaPercentResults = countPercentage(malaria);
+  const malariaTertianaPercentResults = countPercentage(malariaTertiana);
+  const malariaKuartanaPercentResults = countPercentage(malariaKuartana);
+  const malariaTropikaPercentResults = countPercentage(malariaTropika);
+  const malariaOvalePercentResults = countPercentage(malariaOvale);
 
-  const malariaTertianaPercentResults = malariaTertiana
-    .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
-
-  const malariaKuartanaPercentResults = malariaKuartana
-    .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
-
-  const malariaTropikaPercentResults = malariaTropika
-    .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
-
-  const malariaOvalePercentResults = malariaOvale
-    .reduce((acc, curr) => acc + curr, 0)
-    .toFixed(2);
-
+  // Semua persentase
   const resultsDiagnosis = {
-    sicks: sicks,
-    percentance: {
+    percentage: {
       malaria: malariaPercentResults,
       tertiana: malariaTertianaPercentResults,
       kuartana: malariaKuartanaPercentResults,
@@ -369,35 +355,35 @@ function getAnswerAndQuestion(data) {
     },
   };
 
+  // Semua pertanyaan sudah dijawab
   if (typeof questions[number] === "undefined") {
-    // Semua pertanyaan sudah dijawab
     getBtnAnswer.forEach((btn) => {
       // Tombol tidak bisa ditekan
       btn.setAttribute("disabled", " ");
     });
 
+    // Jika Pertanyaan pertama jawabannya Tidak
     if (choose[0] === "Tidak") return;
+
+    // Menampilkan hasil diagnosis
     diagnosisResults(resultsDiagnosis);
 
     // Ketika detail ditekan
     const detail = document.querySelector("#detail");
+
     detail.addEventListener("click", (e) => {
       e.preventDefault();
-      seeDetails({
-        details: detailQuestions,
-        percentanceDiagnosis: [
-          (tertiana = malariaTertianaPercentResults),
-          (tropika = malariaTropikaPercentResults),
-          (ovale = malariaOvalePercentResults),
-          (kuartana = malariaKuartanaPercentResults),
-        ],
+
+      socket.emit("percentage", {
+        percentageDiagnosis: {
+          tertiana: malariaTertianaPercentResults,
+          tropika: malariaTropikaPercentResults,
+          ovale: malariaOvalePercentResults,
+          kuartana: malariaKuartanaPercentResults,
+        },
       });
     });
     return;
-  }
-
-  if (answer === yes) {
-    detailQuestions.push(questions[number].gejala);
   }
 
   // Menampilkan pertanyaan selanjutnya
@@ -407,70 +393,7 @@ function getAnswerAndQuestion(data) {
   });
 }
 
-function seeDetails(data) {
-  const detail = data.details
-    .map((gejala) => {
-      return `<li>${gejala}</li>`;
-    })
-    .join("");
-
-  const percentanceMalaria = data.percentanceDiagnosis;
-  // Ambil values dari object
-  const valuesMalaria = Object.values(percentanceMalaria);
-  // Ubah string ke number
-  const toNumber = valuesMalaria.map((possibility) => parseFloat(possibility));
-  // Cek malaria mana yang paling besar
-  const largeNumber = Math.max(...toNumber);
-  // Mengambil index
-  const indexLargeNumber = toNumber.indexOf(largeNumber);
-
-  let typeMalaria = "";
-  let solusi = "";
-  let deskripsi = "";
-
-  if (indexLargeNumber == 0) {
-    typeMalaria = "Tertiana";
-    deskripsi =
-      "Penyebabnya yaitu Plasmodium Vivax. Malaria tertiana merupakan bentuk malaria yang paling sering terjadi. Masa inkubasinya, lama waktu sejak infeksi terjadi hingga muncul gejala, berkisar antara 12 – 17 hari, terkadang lebih panjang.";
-    solusi =
-      "Biasanya dokter akan menggabungkan ACT dan primakuin, dosis : 0,25 mg/kgBB selama 14 hari, penyakit malaria tertiana biasanya sering kambuh dan dokter akan mengkombinasikan dengan primakuin dengan dosis 0,5 mg/KbGG per hari. Angka kematian yang disebabkan oleh malaria tertiana cenderung rendah.";
-  } else if (indexLargeNumber == 1) {
-    typeMalaria = "Tropika";
-    deskripsi =
-      "Penyebabnya yaitu Plasmodium Falciparum. Malaria jenis ini merupakan bentuk malaria paling berat serta paling sering terjadi komplikasi. Masa inkubasinya berkisar 9 – 14 hari. ";
-    solusi =
-      "Penderita malaria jenis tropika harus mendapatkan perawatan intensif di rumah sakit. Pasien akan diberikan artesunat intravena melalui infus. Apabila tidak ada, tim medis akan memberikan kina drip. Malaria tropika sering resisten (kebal) terhadap pengobatan standar malaria.";
-  } else if (indexLargeNumber == 2) {
-    typeMalaria = "Ovale";
-    deskripsi =
-      "Penyebabnya yaitu Plasmodium ovale. Malaria ovale merupakan bentuk malaria paling ringan dari semua jenis malaria. Masa inkubasinya sekitar 11 – 16 hari. Gejala yang muncul hampir sama dengan malaria vivax namun lebih ringan serta puncak demam juga lebih rendah. ";
-    solusi =
-      "Dokter biasanya memberikan obat ACT diberikan ditambah dengan pramakuin selama 14 hari tetapi pada umumnya malaria ovale dapat sembuh spontan tanpa pengobatan.";
-  } else if (indexLargeNumber == 3) {
-    typeMalaria = "Kuartana";
-    deskripsi =
-      "Merupakan malaria yang cukup jarang ditemukan. Penyebabnya yaitu Plasmodium Malariae. Masa inkubasinya berkisar 18 – 40 hari.";
-    solusi =
-      "Dokter biasanya memberikan obat ACT dengan dosis 1 kali sehari selama 3 hari. Pasien yang terkena malaria kuartana tidak diberikan primakuin. Jika sudah terjadi komplikasi, respon terhadap pengobatan anti malaria sering tidak menolong. Pengobatan yang diberikan lebih dari pengobatan anti malaria biasa.";
-  }
-
-  const div = document.createElement("div");
-  div.classList.add("message");
-
-  div.innerHTML = `
-    <p class="meta">Detail Diagnosis : </p>
-    <h3>Anda terkena malaria jenis ${typeMalaria} ${largeNumber}%</h3>
-    <h3>Dekripsi : </h3>
-    <p>${deskripsi}</p>
-    <h3>Solusi : </h3>
-    <p>${solusi}</p>
-  `;
-
-  document.querySelector(".chat-messages").appendChild(div);
-
-  chatMessage.scrollTop = chatMessage.scrollHeight;
-}
-
+// Menampilkan hasil diagnosis
 function diagnosisResults(result) {
   const div = document.createElement("div");
 
@@ -481,13 +404,13 @@ function diagnosisResults(result) {
   div.innerHTML = `
         <p class="meta">Hasil Diagnosa</p>
           <p class="text">
-          <h3>Anda Terkena Malaria ${result.percentance.malaria} %</h3>
+          <h3>Anda Terkena Malaria ${result.percentage.malaria} %</h3>
           <span>Diagnosis Jenis Penyakit Malaria : </span>
             <ul>
-                <li>Malaria Tertiana ${result.percentance.tertiana} %</li>
-                <li>Malaria Tropika ${result.percentance.tropika} %</li>
-                <li>Malaria Ovale ${result.percentance.ovale} %</li>
-                <li>Malaria Kuartana ${result.percentance.kuartana} %</li>
+                <li>Malaria Tertiana ${result.percentage.tertiana} %</li>
+                <li>Malaria Tropika ${result.percentage.tropika} %</li>
+                <li>Malaria Ovale ${result.percentage.ovale} %</li>
+                <li>Malaria Kuartana ${result.percentage.kuartana} %</li>
             </ul>
         </p>
         <a href="" id="detail" style="color:white">Lihat Detail</a>
@@ -497,18 +420,33 @@ function diagnosisResults(result) {
   chatMessage.scrollTop = chatMessage.scrollHeight;
 }
 
-/*
-const questions = [];
+socket.on("possibility", (biggestPossibility) =>
+  seeDetails(biggestPossibility)
+);
 
-function joinAnswersAndQuestions(question) {
-  questions.push(question);
-  return {
-    answers: choose,
-    questions: questions,
-  };
-} */
+// Mengirimkan pesan detail dari hasil diagnosis
+function seeDetails(biggestPossibility) {
+  socket.emit("checkTypeMalaria", biggestPossibility.indexLargeNumber);
 
-/* const malariaTertiana = [0, 2, 5, 6, 7, 8, 9, 10, 11, 12, 14, 18, 19, 20, 21];
-const malariaKuartana = [0, 3, 5, 6, 7, 8, 9, 10, 11, 12, 16, 17, 19, 20, 21];
-const malariaOvale = [0, 1, 5, 6, 7, 8, 9, 10, 11, 12, 15, 19, 20, 21];
-const malariaTropika = [0, 1, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 16, 19, 20, 21]; */
+  const div = document.createElement("div");
+  div.classList.add("message");
+
+  socket.on("finalResult", (result) => {
+    div.innerHTML = `
+      <p class="meta">Detail Diagnosis : </p>
+      <h3>Anda terkena malaria jenis ${result.typeMalaria} ${biggestPossibility.largeNumber}%</h3>
+      <h3>Dekripsi : </h3>
+      <p>${result.deskripsi}</p>
+      <h3>Solusi : </h3>
+      <p>${result.solusi}</p>
+    `;
+  });
+
+  document.querySelector(".chat-messages").appendChild(div);
+
+  chatMessage.scrollTop = chatMessage.scrollHeight;
+}
+
+function countPercentage(data) {
+  return data.reduce((acc, curr) => acc + curr, 0).toFixed(2);
+}
