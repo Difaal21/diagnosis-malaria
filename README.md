@@ -1,5 +1,3 @@
-# diagnosis-malaria
-Pembelajaran Sistem Pakar : Aplikasi diagnosis penyakit malaria menggunakan method forward chaining.
 <h3>Cara Penggunaan</h3>
 <ul>
   <li>Download dan install Node.js di https://nodejs.org/en/</li>
